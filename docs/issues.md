@@ -11,42 +11,44 @@ This document outlines the specific issues to be addressed during each sprint of
 - [ ] Issue #4: Set up CI/CD pipeline
 
 ### Authentication System
-- [ ] Issue #5: Design user authentication database schema
-- [ ] Issue #6: Implement user registration functionality
-- [ ] Issue #7: Implement login system
-- [ ] Issue #8: Create password recovery mechanism
-- [ ] Issue #9: Implement JWT token generation and validation
+- [ ] Issue #5: Design user authentication database schema with Google OAuth
+- [ ] Issue #6: Set up Google OAuth 2.0 credentials and configuration
+- [ ] Issue #7: Implement Google OAuth login flow (Go backend)
+- [ ] Issue #8: Create React Google OAuth integration
+- [ ] Issue #9: Implement JWT session management with sqlx
 - [ ] Issue #10: Create middleware for protected routes
+- [ ] Issue #11: Implement session management and token refresh
+- [ ] Issue #12: Set up Go embed for React build serving
 
 ## Sprint 2: User Profiles
 
 ### Basic Profile Functionality
-- [ ] Issue #11: Design user profile database schema
-- [ ] Issue #12: Implement API endpoints for profile creation
-- [ ] Issue #13: Create profile viewing functionality
-- [ ] Issue #14: Implement profile editing capabilities
+- [ ] Issue #13: Design user profile database schema
+- [ ] Issue #14: Implement API endpoints for profile creation
+- [ ] Issue #15: Create profile viewing functionality
+- [ ] Issue #16: Implement profile editing capabilities
 
 ### Profile Enhancements
-- [ ] Issue #15: Implement profile photo upload and storage
-- [ ] Issue #16: Create identity verification system
-- [ ] Issue #17: Design and implement user rating/reputation system
-- [ ] Issue #18: Add profile privacy settings
+- [ ] Issue #17: Implement profile photo upload and storage
+- [ ] Issue #18: Create identity verification system
+- [ ] Issue #19: Design and implement user rating/reputation system
+- [ ] Issue #20: Add profile privacy settings
 
 ## Sprint 3: Trip Management
 
 ### Trip Creation and Management
-- [ ] Issue #19: Design trip database schema
-- [ ] Issue #20: Implement trip creation functionality
-- [ ] Issue #21: Create trip editing and deletion features
-- [ ] Issue #22: Implement trip status management (active, completed, canceled)
+- [ ] Issue #21: Design trip database schema
+- [ ] Issue #22: Implement trip creation functionality
+- [ ] Issue #23: Create trip editing and deletion features
+- [ ] Issue #24: Implement trip status management (active, completed, canceled)
 
 ### Trip Search and Discovery
-- [ ] Issue #23: Implement basic trip search by destination
-- [ ] Issue #24: Add date range filtering for trips
-- [ ] Issue #25: Create budget-based filtering
-- [ ] Issue #26: Implement advanced filters (activities, trip type)
-- [ ] Issue #27: Create tagging system for trips
-- [ ] Issue #28: Integrate maps for destination visualization
+- [ ] Issue #25: Implement basic trip search by destination
+- [ ] Issue #26: Add date range filtering for trips
+- [ ] Issue #27: Create budget-based filtering
+- [ ] Issue #28: Implement advanced filters (activities, trip type)
+- [ ] Issue #29: Create tagging system for trips
+- [ ] Issue #30: Integrate maps for destination visualization
 
 ## Sprint 4: User Communication
 
