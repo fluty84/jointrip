@@ -48,16 +48,20 @@ JoinTrip is a comprehensive travel companion application built in Go that allows
 - **Routing**: React Router
 
 ### Architecture
-- **Deployment**: Single binary with embedded React build
+- **Deployment**: Railway cloud platform with GitHub CI/CD
 - **Asset Serving**: Go `embed` directive for static files
 - **API Communication**: JSON REST API between React and Go
 - **Build Process**: React build embedded into Go binary
+- **CI/CD Pipeline**: GitHub Actions (test → build → publish → deploy)
 
 ### Development Tools
 - **Documentation**: Markdown with Mermaid diagrams
-- **Version Control**: Git
+- **Version Control**: Git with GitHub
 - **Package Management**: Go modules + npm/yarn
 - **Hot Reload**: Air (Go) + Vite/CRA dev server (React)
+- **CI/CD**: GitHub Actions
+- **Deployment**: Railway platform
+- **Monitoring**: Railway metrics + custom logging
 
 ## 📁 Project Structure
 
