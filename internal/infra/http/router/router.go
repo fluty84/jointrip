@@ -12,8 +12,8 @@ import (
 
 // Router wraps the Gin router with our application routes
 type Router struct {
-	engine      *gin.Engine
-	authHandler *handlers.AuthHandler
+	engine         *gin.Engine
+	authHandler    *handlers.AuthHandler
 	authMiddleware *middleware.AuthMiddleware
 }
 
@@ -32,9 +32,14 @@ func NewRouter(
 
 	engine := gin.New()
 
+	// Create middleware
+	loggingMiddleware := middleware.NewLoggingMiddleware(logger)
+	authMiddleware := middleware.NewAuthMiddleware(authService)
+
 	// Add middleware
-	engine.Use(gin.Logger())
 	engine.Use(gin.Recovery())
+	engine.Use(loggingMiddleware.RequestLogger())
+	engine.Use(loggingMiddleware.ErrorLogger())
 
 	// CORS middleware
 	engine.Use(func(c *gin.Context) {
@@ -50,9 +55,8 @@ func NewRouter(
 		c.Next()
 	})
 
-	// Create handlers and middleware
+	// Create handlers
 	authHandler := handlers.NewAuthHandler(authService, logger)
-	authMiddleware := middleware.NewAuthMiddleware(authService)
 
 	router := &Router{
 		engine:         engine,
@@ -69,7 +73,7 @@ func (r *Router) setupRoutes() {
 	// Health check
 	r.engine.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"status": "ok",
+			"status":  "ok",
 			"service": "jointrip-api",
 		})
 	})
