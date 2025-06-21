@@ -5,6 +5,7 @@ A social travel platform that connects travelers, facilitates trip sharing, and 
 ## Overview
 
 JoinTrip is a comprehensive travel companion application built in Go that allows users to:
+
 - Find travel companions with similar destinations and interests
 - Share and split travel expenses seamlessly
 - Communicate with fellow travelers
@@ -14,6 +15,7 @@ JoinTrip is a comprehensive travel companion application built in Go that allows
 ## 🚀 Features
 
 ### Core Functionality
+
 - **User Authentication & Profiles**: Secure registration, login, and comprehensive user profiles with verification
 - **Trip Management**: Create, search, and manage travel opportunities with detailed filtering
 - **Social Networking**: Connect with like-minded travelers and build a travel network
@@ -22,6 +24,7 @@ JoinTrip is a comprehensive travel companion application built in Go that allows
 - **Rating System**: Build trust through peer reviews and reputation scores
 
 ### Advanced Features
+
 - **Smart Search**: Find trips by destination, dates, budget, activities, and more
 - **Geographic Integration**: Interactive maps and location-based services
 - **Multi-Currency Support**: Handle expenses in different currencies with conversion
@@ -32,6 +35,7 @@ JoinTrip is a comprehensive travel companion application built in Go that allows
 ## 🛠️ Technology Stack
 
 ### Backend
+
 - **Language**: Go (Golang) 1.24+
 - **Web Framework**: Gin/Echo (planned)
 - **Database**: PostgreSQL with sqlx
@@ -40,6 +44,7 @@ JoinTrip is a comprehensive travel companion application built in Go that allows
 - **Static Assets**: Go embed for serving React build
 
 ### Frontend
+
 - **Framework**: React 18+
 - **Build Tool**: Vite/Create React App
 - **State Management**: React Context/Redux Toolkit (planned)
@@ -48,16 +53,22 @@ JoinTrip is a comprehensive travel companion application built in Go that allows
 - **Routing**: React Router
 
 ### Architecture
-- **Deployment**: Single binary with embedded React build
+
+- **Deployment**: Railway cloud platform with GitHub CI/CD
 - **Asset Serving**: Go `embed` directive for static files
 - **API Communication**: JSON REST API between React and Go
 - **Build Process**: React build embedded into Go binary
+- **CI/CD Pipeline**: GitHub Actions (test → build → publish → deploy)
 
 ### Development Tools
+
 - **Documentation**: Markdown with Mermaid diagrams
-- **Version Control**: Git
+- **Version Control**: Git with GitHub
 - **Package Management**: Go modules + npm/yarn
 - **Hot Reload**: Air (Go) + Vite/CRA dev server (React)
+- **CI/CD**: GitHub Actions
+- **Deployment**: Railway platform
+- **Monitoring**: Railway metrics + custom logging
 
 ## 📁 Project Structure
 
@@ -111,18 +122,27 @@ jointrip/
 The project is organized into 10 sprints, each lasting 2 weeks:
 
 ### Sprint 1: Setup and Authentication ✅
+
 - [x] Project initialization
-- [x] Basic Go structure
+- [x] Basic Go structure with hexagonal architecture
+- [x] Database setup with PostgreSQL + Docker
+- [x] Google OAuth 2.0 setup (Go backend)
+- [x] JWT session management
+- [x] User and session domain entities
+- [x] Authentication service with business logic
+- [x] Database repositories and migrations
+- [x] HTTP handlers and middleware
+- [x] Protected routes and auth middleware
+- [x] Comprehensive test suite
+- [x] Makefile for development workflow
+- [x] Docker Compose for database
 - [ ] React frontend setup with Vite/CRA
 - [ ] Go embed configuration for React build
-- [ ] Google OAuth 2.0 setup (Go backend)
-- [ ] Database setup with PostgreSQL + sqlx
-- [ ] JWT session management
 - [ ] React Google OAuth integration
-- [ ] Protected routes and auth middleware
 - [ ] API client setup in React
 
 ### Sprint 2: User Profiles
+
 - [ ] Profile API endpoints (Go backend)
 - [ ] React profile components and forms
 - [ ] Photo upload functionality (backend + frontend)
@@ -131,48 +151,56 @@ The project is organized into 10 sprints, each lasting 2 weeks:
 - [ ] Profile management UI in React
 
 ### Sprint 3: Trip Management
+
 - [ ] Trip creation and editing
 - [ ] Advanced search and filtering
 - [ ] Geographic integration
 - [ ] Tagging system
 
 ### Sprint 4: Communication
+
 - [ ] Messaging system
 - [ ] Real-time notifications
 - [ ] Trip join requests
 - [ ] Comment system
 
 ### Sprint 5: Expense Management
+
 - [ ] Expense tracking
 - [ ] Splitting calculator
 - [ ] Multi-currency support
 - [ ] Balance visualization
 
 ### Sprint 6: Security and Privacy
+
 - [ ] Privacy controls
 - [ ] Two-factor authentication
 - [ ] User reporting system
 - [ ] Security audit
 
 ### Sprint 7: External Integrations
+
 - [ ] Travel service APIs
 - [ ] Social media sharing
 - [ ] Recommendation engine
 - [ ] Weather and events
 
 ### Sprint 8: Testing and Optimization
+
 - [ ] Comprehensive testing
 - [ ] Performance optimization
 - [ ] Security testing
 - [ ] Bug fixes
 
 ### Sprint 9: Mobile Version
+
 - [ ] Mobile optimization
 - [ ] Progressive web app
 - [ ] Mobile-specific features
 - [ ] Cross-device testing
 
 ### Sprint 10: Launch and Feedback
+
 - [ ] Production deployment
 - [ ] Analytics implementation
 - [ ] Admin dashboard
@@ -181,6 +209,7 @@ The project is organized into 10 sprints, each lasting 2 weeks:
 ## 🚦 Getting Started
 
 ### Prerequisites
+
 - Go 1.24 or higher
 - Node.js 18+ and npm/yarn
 - PostgreSQL 13+ (when database is implemented)
@@ -190,17 +219,20 @@ The project is organized into 10 sprints, each lasting 2 weeks:
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/yourusername/jointrip.git
    cd jointrip
    ```
 
 2. **Install Go dependencies**
+
    ```bash
    go mod download
    ```
 
 3. **Install React dependencies**
+
    ```bash
    cd web
    npm install
@@ -208,6 +240,7 @@ The project is organized into 10 sprints, each lasting 2 weeks:
    ```
 
 4. **Set up Google OAuth credentials**
+
    ```bash
    # Create .env file with your Google OAuth credentials
    cp .env.example .env
@@ -215,6 +248,7 @@ The project is organized into 10 sprints, each lasting 2 weeks:
    ```
 
 5. **Build React frontend**
+
    ```bash
    cd web
    npm run build
@@ -229,6 +263,7 @@ The project is organized into 10 sprints, each lasting 2 weeks:
 ### Development Setup
 
 1. **Install development tools**
+
    ```bash
    # Install air for hot reloading (optional)
    go install github.com/cosmtrek/air@latest
@@ -238,6 +273,7 @@ The project is organized into 10 sprints, each lasting 2 weeks:
    ```
 
 2. **Development mode (with hot reloading)**
+
    ```bash
    # Terminal 1: Start React dev server
    cd web
@@ -248,6 +284,7 @@ The project is organized into 10 sprints, each lasting 2 weeks:
    ```
 
 3. **Production build and run**
+
    ```bash
    # Build React for production
    cd web
@@ -259,6 +296,7 @@ The project is organized into 10 sprints, each lasting 2 weeks:
    ```
 
 4. **Run tests**
+
    ```bash
    # Go tests
    go test ./...
@@ -294,6 +332,7 @@ We welcome contributions! Please follow these steps:
 5. Open a Pull Request
 
 ### Development Guidelines
+
 - Follow Go best practices and conventions
 - Write comprehensive tests for new features
 - Update documentation for significant changes
@@ -344,6 +383,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 For support and questions:
+
 - Create an issue in this repository
 - Contact the development team
 - Check the documentation in the `docs/` folder
@@ -358,4 +398,4 @@ For support and questions:
 
 **Happy Traveling! 🌟**
 
-*JoinTrip - Connecting travelers, sharing experiences, creating memories.*
+_JoinTrip - Connecting travelers, sharing experiences, creating memories._
