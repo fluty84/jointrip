@@ -35,6 +35,15 @@ services:
       timeout: 5s
       retries: 5
 
+  adminer:
+    image: adminer:4.8.1
+    container_name: jointrip_adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
 volumes:
   postgres_data:
     driver: local
