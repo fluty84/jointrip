@@ -25,18 +25,18 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 func (r *UserRepository) Create(ctx context.Context, u *user.User) error {
 	query := `
 		INSERT INTO users (
-			id, google_id, email, username, first_name, last_name, phone, 
+			id, google_id, email, username, first_name, last_name, phone,
 			date_of_birth, gender, bio, profile_photo_url, google_photo_url,
-			verification_status, reputation_score, privacy_level, is_active,
+			reputation_score, privacy_level, is_active,
 			last_login, created_at, updated_at
 		) VALUES (
-			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19
+			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18
 		)`
 
 	_, err := r.db.ExecContext(ctx, query,
 		u.ID, u.GoogleID, u.Email, u.Username, u.FirstName, u.LastName, u.Phone,
 		u.DateOfBirth, u.Gender, u.Bio, u.ProfilePhotoURL, u.GooglePhotoURL,
-		u.VerificationStatus, u.ReputationScore, u.PrivacyLevel, u.IsActive,
+		u.ReputationScore, u.PrivacyLevel, u.IsActive,
 		u.LastLogin, u.CreatedAt, u.UpdatedAt,
 	)
 
@@ -58,7 +58,7 @@ func (r *UserRepository) GetByID(ctx context.Context, id uuid.UUID) (*user.User,
 	query := `
 		SELECT id, google_id, email, username, first_name, last_name, phone,
 			   date_of_birth, gender, bio, profile_photo_url, google_photo_url,
-			   verification_status, reputation_score, privacy_level, is_active,
+			   reputation_score, privacy_level, is_active,
 			   last_login, created_at, updated_at
 		FROM users 
 		WHERE id = $1 AND is_active = true`
@@ -71,9 +71,9 @@ func (r *UserRepository) GetByGoogleID(ctx context.Context, googleID string) (*u
 	query := `
 		SELECT id, google_id, email, username, first_name, last_name, phone,
 			   date_of_birth, gender, bio, profile_photo_url, google_photo_url,
-			   verification_status, reputation_score, privacy_level, is_active,
+			   reputation_score, privacy_level, is_active,
 			   last_login, created_at, updated_at
-		FROM users 
+		FROM users
 		WHERE google_id = $1 AND is_active = true`
 
 	return r.scanUser(r.db.QueryRowContext(ctx, query, googleID))
@@ -84,9 +84,9 @@ func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*user.Us
 	query := `
 		SELECT id, google_id, email, username, first_name, last_name, phone,
 			   date_of_birth, gender, bio, profile_photo_url, google_photo_url,
-			   verification_status, reputation_score, privacy_level, is_active,
+			   reputation_score, privacy_level, is_active,
 			   last_login, created_at, updated_at
-		FROM users 
+		FROM users
 		WHERE email = $1 AND is_active = true`
 
 	return r.scanUser(r.db.QueryRowContext(ctx, query, email))
@@ -97,9 +97,9 @@ func (r *UserRepository) GetByUsername(ctx context.Context, username string) (*u
 	query := `
 		SELECT id, google_id, email, username, first_name, last_name, phone,
 			   date_of_birth, gender, bio, profile_photo_url, google_photo_url,
-			   verification_status, reputation_score, privacy_level, is_active,
+			   reputation_score, privacy_level, is_active,
 			   last_login, created_at, updated_at
-		FROM users 
+		FROM users
 		WHERE username = $1 AND is_active = true`
 
 	return r.scanUser(r.db.QueryRowContext(ctx, query, username))
@@ -111,14 +111,14 @@ func (r *UserRepository) Update(ctx context.Context, u *user.User) error {
 		UPDATE users SET
 			email = $2, username = $3, first_name = $4, last_name = $5, phone = $6,
 			date_of_birth = $7, gender = $8, bio = $9, profile_photo_url = $10,
-			verification_status = $11, reputation_score = $12, privacy_level = $13,
-			is_active = $14, last_login = $15, updated_at = $16
+			reputation_score = $11, privacy_level = $12,
+			is_active = $13, last_login = $14, updated_at = $15
 		WHERE id = $1`
 
 	result, err := r.db.ExecContext(ctx, query,
 		u.ID, u.Email, u.Username, u.FirstName, u.LastName, u.Phone,
 		u.DateOfBirth, u.Gender, u.Bio, u.ProfilePhotoURL,
-		u.VerificationStatus, u.ReputationScore, u.PrivacyLevel,
+		u.ReputationScore, u.PrivacyLevel,
 		u.IsActive, u.LastLogin, u.UpdatedAt,
 	)
 
@@ -164,9 +164,9 @@ func (r *UserRepository) List(ctx context.Context, limit, offset int) ([]*user.U
 	query := `
 		SELECT id, google_id, email, username, first_name, last_name, phone,
 			   date_of_birth, gender, bio, profile_photo_url, google_photo_url,
-			   verification_status, reputation_score, privacy_level, is_active,
+			   reputation_score, privacy_level, is_active,
 			   last_login, created_at, updated_at
-		FROM users 
+		FROM users
 		WHERE is_active = true
 		ORDER BY created_at DESC
 		LIMIT $1 OFFSET $2`
@@ -225,7 +225,7 @@ func (r *UserRepository) scanUser(row *sql.Row) (*user.User, error) {
 	err := row.Scan(
 		&u.ID, &u.GoogleID, &u.Email, &u.Username, &u.FirstName, &u.LastName, &u.Phone,
 		&u.DateOfBirth, &u.Gender, &u.Bio, &u.ProfilePhotoURL, &u.GooglePhotoURL,
-		&u.VerificationStatus, &u.ReputationScore, &u.PrivacyLevel, &u.IsActive,
+		&u.ReputationScore, &u.PrivacyLevel, &u.IsActive,
 		&u.LastLogin, &u.CreatedAt, &u.UpdatedAt,
 	)
 
@@ -245,7 +245,7 @@ func (r *UserRepository) scanUserFromRows(rows *sql.Rows) (*user.User, error) {
 	err := rows.Scan(
 		&u.ID, &u.GoogleID, &u.Email, &u.Username, &u.FirstName, &u.LastName, &u.Phone,
 		&u.DateOfBirth, &u.Gender, &u.Bio, &u.ProfilePhotoURL, &u.GooglePhotoURL,
-		&u.VerificationStatus, &u.ReputationScore, &u.PrivacyLevel, &u.IsActive,
+		&u.ReputationScore, &u.PrivacyLevel, &u.IsActive,
 		&u.LastLogin, &u.CreatedAt, &u.UpdatedAt,
 	)
 

@@ -67,39 +67,6 @@ func (m *AuthMiddleware) OptionalAuth() gin.HandlerFunc {
 	}
 }
 
-// RequireVerified middleware that requires verified users
-func (m *AuthMiddleware) RequireVerified() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		userInterface, exists := c.Get("user")
-		if !exists {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"error": "Authentication required",
-			})
-			c.Abort()
-			return
-		}
-
-		user, ok := userInterface.(*user.User)
-		if !ok {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Invalid user context",
-			})
-			c.Abort()
-			return
-		}
-
-		if !user.IsVerified() {
-			c.JSON(http.StatusForbidden, gin.H{
-				"error": "Account verification required",
-			})
-			c.Abort()
-			return
-		}
-
-		c.Next()
-	}
-}
-
 // extractToken extracts the bearer token from the request
 func (m *AuthMiddleware) extractToken(c *gin.Context) string {
 	// Try Authorization header first

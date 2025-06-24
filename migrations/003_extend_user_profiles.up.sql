@@ -118,7 +118,7 @@ BEGIN
         completion_score := completion_score + 1;
     END IF;
     
-    IF user_row.picture IS NOT NULL AND user_row.picture != '' THEN
+    IF user_row.profile_photo_url IS NOT NULL AND user_row.profile_photo_url != '' THEN
         completion_score := completion_score + 1;
     END IF;
     

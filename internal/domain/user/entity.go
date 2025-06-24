@@ -7,16 +7,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// VerificationStatus represents the user's identity verification status
-type VerificationStatus string
-
-const (
-	VerificationStatusUnverified VerificationStatus = "unverified"
-	VerificationStatusPending    VerificationStatus = "pending"
-	VerificationStatusVerified   VerificationStatus = "verified"
-	VerificationStatusRejected   VerificationStatus = "rejected"
-)
-
 // PrivacyLevel represents the user's profile visibility settings
 type PrivacyLevel string
 
@@ -51,37 +41,36 @@ const (
 
 // User represents a user in the system
 type User struct {
-	ID                          uuid.UUID          `json:"id"`
-	GoogleID                    string             `json:"google_id"`
-	Email                       string             `json:"email"`
-	Username                    string             `json:"username"`
-	FirstName                   string             `json:"first_name"`
-	LastName                    string             `json:"last_name"`
-	Phone                       *string            `json:"phone,omitempty"`
-	DateOfBirth                 *time.Time         `json:"date_of_birth,omitempty"`
-	Gender                      *Gender            `json:"gender,omitempty"`
-	Bio                         string             `json:"bio"`
-	Location                    string             `json:"location"`
-	Website                     string             `json:"website"`
-	Languages                   []string           `json:"languages"`
-	Interests                   []string           `json:"interests"`
-	TravelStyle                 *TravelStyle       `json:"travel_style,omitempty"`
-	ProfilePhotoURL             string             `json:"profile_photo_url"`
-	GooglePhotoURL              string             `json:"google_photo_url"`
-	VerificationStatus          VerificationStatus `json:"verification_status"`
-	VerificationDocuments       map[string]any     `json:"verification_documents,omitempty"`
-	ReputationScore             float64            `json:"reputation_score"`
-	RatingAverage               float64            `json:"rating_average"`
-	RatingCount                 int                `json:"rating_count"`
-	PrivacyLevel                PrivacyLevel       `json:"privacy_level"`
-	ProfileVisibility           PrivacyLevel       `json:"profile_visibility"`
-	EmailNotifications          bool               `json:"email_notifications"`
-	PushNotifications           bool               `json:"push_notifications"`
-	ProfileCompletionPercentage int                `json:"profile_completion_percentage"`
-	IsActive                    bool               `json:"is_active"`
-	LastLogin                   *time.Time         `json:"last_login,omitempty"`
-	CreatedAt                   time.Time          `json:"created_at"`
-	UpdatedAt                   time.Time          `json:"updated_at"`
+	ID              uuid.UUID    `json:"id"`
+	GoogleID        string       `json:"google_id"`
+	Email           string       `json:"email"`
+	Username        string       `json:"username"`
+	FirstName       string       `json:"first_name"`
+	LastName        string       `json:"last_name"`
+	Phone           *string      `json:"phone,omitempty"`
+	DateOfBirth     *time.Time   `json:"date_of_birth,omitempty"`
+	Gender          *Gender      `json:"gender,omitempty"`
+	Bio             string       `json:"bio"`
+	Location        string       `json:"location"`
+	Website         string       `json:"website"`
+	Languages       []string     `json:"languages"`
+	Interests       []string     `json:"interests"`
+	TravelStyle     *TravelStyle `json:"travel_style,omitempty"`
+	ProfilePhotoURL string       `json:"profile_photo_url"`
+	GooglePhotoURL  string       `json:"google_photo_url"`
+
+	ReputationScore             float64      `json:"reputation_score"`
+	RatingAverage               float64      `json:"rating_average"`
+	RatingCount                 int          `json:"rating_count"`
+	PrivacyLevel                PrivacyLevel `json:"privacy_level"`
+	ProfileVisibility           PrivacyLevel `json:"profile_visibility"`
+	EmailNotifications          bool         `json:"email_notifications"`
+	PushNotifications           bool         `json:"push_notifications"`
+	ProfileCompletionPercentage int          `json:"profile_completion_percentage"`
+	IsActive                    bool         `json:"is_active"`
+	LastLogin                   *time.Time   `json:"last_login,omitempty"`
+	CreatedAt                   time.Time    `json:"created_at"`
+	UpdatedAt                   time.Time    `json:"updated_at"`
 }
 
 // NewUser creates a new user from Google OAuth data
@@ -98,17 +87,17 @@ func NewUser(googleID, email, firstName, lastName, googlePhotoURL string) (*User
 
 	now := time.Now()
 	user := &User{
-		ID:                          uuid.New(),
-		GoogleID:                    googleID,
-		Email:                       email,
-		Username:                    generateUsername(firstName, lastName),
-		FirstName:                   firstName,
-		LastName:                    lastName,
-		Languages:                   []string{},
-		Interests:                   []string{},
-		GooglePhotoURL:              googlePhotoURL,
-		ProfilePhotoURL:             googlePhotoURL, // Initially use Google photo
-		VerificationStatus:          VerificationStatusUnverified,
+		ID:              uuid.New(),
+		GoogleID:        googleID,
+		Email:           email,
+		Username:        generateUsername(firstName, lastName),
+		FirstName:       firstName,
+		LastName:        lastName,
+		Languages:       []string{},
+		Interests:       []string{},
+		GooglePhotoURL:  googlePhotoURL,
+		ProfilePhotoURL: googlePhotoURL, // Initially use Google photo
+
 		ReputationScore:             0.0,
 		RatingAverage:               0.0,
 		RatingCount:                 0,
@@ -155,12 +144,6 @@ func (u *User) UpdateLastLogin() {
 	u.UpdatedAt = now
 }
 
-// SetVerificationStatus updates the user's verification status
-func (u *User) SetVerificationStatus(status VerificationStatus) {
-	u.VerificationStatus = status
-	u.UpdatedAt = time.Now()
-}
-
 // SetPrivacyLevel updates the user's privacy level
 func (u *User) SetPrivacyLevel(level PrivacyLevel) {
 	u.PrivacyLevel = level
@@ -179,14 +162,9 @@ func (u *User) Activate() {
 	u.UpdatedAt = time.Now()
 }
 
-// IsVerified returns true if the user is verified
-func (u *User) IsVerified() bool {
-	return u.VerificationStatus == VerificationStatusVerified
-}
-
 // CanCreateTrips returns true if the user can create trips
 func (u *User) CanCreateTrips() bool {
-	return u.IsActive && u.IsVerified()
+	return u.IsActive
 }
 
 // UpdateLanguages updates the user's language preferences
@@ -301,9 +279,6 @@ func (u *User) CalculateProfileCompletion() {
 	}
 	if u.TravelStyle != nil {
 		completedFields++
-	}
-	if u.VerificationStatus == VerificationStatusVerified {
-		completedFields += 2 // Verification is worth 2 points
 	}
 	if u.RatingCount > 0 {
 		completedFields++

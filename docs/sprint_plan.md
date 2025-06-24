@@ -13,7 +13,6 @@ JoinTrip is an application that allows users to find travel companions, share ex
 ## Sprint 2: User Profiles (2 weeks)
 - Create user profiles with basic information
 - Implement profile photo uploads
-- Add identity verification system
 - Develop reputation/rating system
 - Implement profile editing
 

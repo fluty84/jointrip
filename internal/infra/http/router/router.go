@@ -115,14 +115,6 @@ func (r *Router) setupRoutes() {
 		// Add routes that work with or without authentication
 	}
 
-	// Verified user routes (require verified account)
-	verified := v1.Group("/")
-	verified.Use(r.authMiddleware.RequireAuth())
-	verified.Use(r.authMiddleware.RequireVerified())
-	{
-		// Add routes that require verified users (like creating trips)
-	}
-
 	// Serve React static files
 	r.setupStaticRoutes()
 }

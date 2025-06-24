@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -8,9 +8,16 @@ export const AuthCallbackPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [error, setError] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(true);
+  const hasProcessed = useRef(false);
 
   useEffect(() => {
     const handleCallback = async () => {
+      // Prevent multiple executions
+      if (hasProcessed.current) {
+        return;
+      }
+      hasProcessed.current = true;
+
       try {
         const code = searchParams.get('code');
         const state = searchParams.get('state');
@@ -30,7 +37,7 @@ export const AuthCallbackPage: React.FC = () => {
 
         // Perform login with the received code
         await login(code, state || undefined);
-        
+
         // Redirect to home page on successful login
         navigate('/', { replace: true });
       } catch (error) {
