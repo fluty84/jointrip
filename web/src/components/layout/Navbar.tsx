@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import logoImage from '../../assets/logo_s.png';
 
 export const Navbar: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
@@ -24,7 +23,7 @@ export const Navbar: React.FC = () => {
           <Link to="/" className="flex items-center space-x-3 group">
             <div className="relative">
               <img
-                src={logoImage}
+                src="/img/logo_s.png"
                 alt="JoinTrip Logo"
                 className="w-10 h-10 transition-transform duration-300 group-hover:scale-110"
               />
