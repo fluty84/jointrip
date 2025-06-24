@@ -134,6 +134,9 @@ func (r *Router) setupStaticRoutes() {
 	// Serve uploaded files
 	r.engine.Static("/uploads", "./uploads")
 
+	// Serve img files from web/public/img
+	r.engine.Static("/img", "./web/public/img")
+
 	// Serve assets manually to avoid NoRoute conflicts
 	r.engine.GET("/assets/*filepath", func(c *gin.Context) {
 		filepath := c.Param("filepath")
