@@ -1,15 +1,80 @@
-import React from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { authService } from '../services/authService';
+
+interface User {
+  id: string;
+  email: string;
+  username: string;
+  first_name: string;
+  last_name: string;
+  bio?: string;
+  location?: string;
+  phone?: string;
+  website?: string;
+  languages: string[];
+  interests: string[];
+  travel_style?: string;
+  profile_photo_url: string;
+  google_photo_url: string;
+  reputation_score: number;
+  rating_average: number;
+  rating_count: number;
+  profile_completion_percentage: number;
+  created_at: string;
+}
 
 export const ProfilePage: React.FC = () => {
-  const { user } = useAuth();
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>('');
 
-  if (!user) {
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  const fetchProfile = async () => {
+    try {
+      const userData = await authService.getProfile();
+      setUser(userData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load profile');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600"></div>
       </div>
     );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
+          <div className="text-center">
+            <h3 className="mt-2 text-sm font-medium text-gray-900">Error Loading Profile</h3>
+            <p className="mt-1 text-sm text-gray-500">{error}</p>
+            <div className="mt-6">
+              <button
+                onClick={fetchProfile}
+                className="btn-primary"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <div>No profile data available</div>;
   }
 
   return (
@@ -23,51 +88,53 @@ export const ProfilePage: React.FC = () => {
         {/* Profile Card */}
         <div className="md:col-span-1">
           <div className="card text-center">
-            {user.picture ? (
-              <img
-                src={user.picture}
-                alt={`${user.firstName} ${user.lastName}`}
-                className="w-24 h-24 rounded-full mx-auto mb-4"
-              />
-            ) : (
-              <div className="w-24 h-24 bg-gray-300 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-gray-600 text-2xl font-medium">
-                  {user.firstName?.[0]}{user.lastName?.[0]}
-                </span>
-              </div>
-            )}
-            
+            <img
+              src={user.profile_photo_url || user.google_photo_url || '/default-avatar.png'}
+              alt={`${user.first_name} ${user.last_name}`}
+              className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+            />
+
             <h2 className="text-xl font-semibold text-gray-900 mb-1">
-              {user.firstName} {user.lastName}
+              {user.first_name} {user.last_name}
             </h2>
+            <p className="text-gray-600 mb-2">@{user.username}</p>
             <p className="text-gray-600 mb-4">{user.email}</p>
-            
+
             <div className="flex items-center justify-center space-x-2 mb-4">
-              {user.isVerified ? (
-                <>
-                  <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-green-600 text-sm font-medium">Verified</span>
-                </>
-              ) : (
-                <>
-                  <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-yellow-600 text-sm font-medium">Pending Verification</span>
-                </>
-              )}
+              <span className="text-yellow-400">⭐</span>
+              <span className="text-sm text-gray-600">
+                {user.rating_average.toFixed(1)} ({user.rating_count} reviews)
+              </span>
             </div>
 
-            <button className="btn-primary w-full">
+            <div className="mb-4">
+              <div className="text-sm text-gray-600 mb-2">
+                Profile {user.profile_completion_percentage}% complete
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-primary-600 h-2 rounded-full"
+                  style={{ width: `${user.profile_completion_percentage}%` }}
+                ></div>
+              </div>
+            </div>
+
+            <Link to="/profile/edit" className="btn-primary w-full block text-center">
               Edit Profile
-            </button>
+            </Link>
           </div>
         </div>
 
         {/* Profile Details */}
         <div className="md:col-span-2 space-y-6">
+          {/* About */}
+          {user.bio && (
+            <div className="card">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">About</h3>
+              <p className="text-gray-700">{user.bio}</p>
+            </div>
+          )}
+
           {/* Basic Information */}
           <div className="card">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
@@ -78,7 +145,7 @@ export const ProfilePage: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  value={user.firstName}
+                  value={user.first_name}
                   readOnly
                   className="input-field bg-gray-50"
                 />
@@ -89,7 +156,7 @@ export const ProfilePage: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  value={user.lastName}
+                  value={user.last_name}
                   readOnly
                   className="input-field bg-gray-50"
                 />
@@ -105,17 +172,111 @@ export const ProfilePage: React.FC = () => {
                   className="input-field bg-gray-50"
                 />
               </div>
+              {user.location && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Location
+                  </label>
+                  <input
+                    type="text"
+                    value={user.location}
+                    readOnly
+                    className="input-field bg-gray-50"
+                  />
+                </div>
+              )}
+              {user.phone && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Phone
+                  </label>
+                  <input
+                    type="text"
+                    value={user.phone}
+                    readOnly
+                    className="input-field bg-gray-50"
+                  />
+                </div>
+              )}
+              {user.website && (
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Website
+                  </label>
+                  <a
+                    href={user.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary-600 hover:text-primary-500"
+                  >
+                    {user.website}
+                  </a>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Travel Preferences */}
           <div className="card">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Travel Preferences</h3>
-            <p className="text-gray-600 text-center py-8">
-              Travel preferences will be available in the next update.
-              <br />
-              <span className="text-sm">Coming soon: Bio, interests, travel style, and more!</span>
-            </p>
+            <div className="space-y-4">
+              {user.travel_style && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Travel Style
+                  </label>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-100 text-primary-800">
+                    {user.travel_style}
+                  </span>
+                </div>
+              )}
+
+              {user.languages.length > 0 && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Languages
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {user.languages.map((language, index) => (
+                      <span
+                        key={index}
+                        className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
+                      >
+                        {language}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {user.interests.length > 0 && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Interests
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {user.interests.map((interest, index) => (
+                      <span
+                        key={index}
+                        className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800"
+                      >
+                        {interest}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {!user.travel_style && user.languages.length === 0 && user.interests.length === 0 && (
+                <p className="text-gray-600 text-center py-8">
+                  No travel preferences set yet.
+                  <br />
+                  <Link to="/profile/edit" className="text-primary-600 hover:text-primary-500">
+                    Add your preferences
+                  </Link>
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Account Settings */}
@@ -140,15 +301,7 @@ export const ProfilePage: React.FC = () => {
                   Manage
                 </button>
               </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="text-sm font-medium text-gray-900">Identity Verification</h4>
-                  <p className="text-sm text-gray-600">Verify your identity to build trust</p>
-                </div>
-                <button className="btn-primary text-sm">
-                  {user.isVerified ? 'Verified' : 'Verify Now'}
-                </button>
-              </div>
+
             </div>
           </div>
         </div>

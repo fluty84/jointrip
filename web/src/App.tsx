@@ -4,6 +4,7 @@ import { Navbar } from './components/layout/Navbar';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { EditProfilePage } from './pages/EditProfilePage';
 import { AuthCallbackPage } from './pages/AuthCallbackPage';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
@@ -23,6 +24,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/edit"
+                element={
+                  <ProtectedRoute>
+                    <EditProfilePage />
                   </ProtectedRoute>
                 }
               />

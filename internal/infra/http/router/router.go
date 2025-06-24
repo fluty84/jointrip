@@ -19,6 +19,7 @@ import (
 type Router struct {
 	engine         *gin.Engine
 	authHandler    *handlers.AuthHandler
+	ratingHandler  *handlers.RatingHandler
 	authMiddleware *middleware.AuthMiddleware
 	webFS          fs.FS
 }
@@ -64,10 +65,12 @@ func NewRouter(
 
 	// Create handlers
 	authHandler := handlers.NewAuthHandler(authService, logger)
+	ratingHandler := handlers.NewRatingHandler(logger)
 
 	router := &Router{
 		engine:         engine,
 		authHandler:    authHandler,
+		ratingHandler:  ratingHandler,
 		authMiddleware: authMiddleware,
 		webFS:          webFS,
 	}
@@ -105,8 +108,14 @@ func (r *Router) setupRoutes() {
 		// User profile routes
 		protected.GET("/profile", r.authHandler.GetProfile)
 		protected.PUT("/profile", r.authHandler.UpdateProfile)
+		protected.POST("/profile/photo", r.authHandler.UploadProfilePhoto)
 		protected.POST("/auth/logout-all", r.authHandler.LogoutAll)
 		protected.GET("/auth/validate", r.authHandler.ValidateToken)
+
+		// Rating routes
+		protected.POST("/ratings", r.ratingHandler.CreateRating)
+		protected.GET("/ratings/my", r.ratingHandler.GetMyRatings)
+		protected.GET("/users/:user_id/ratings", r.ratingHandler.GetUserRatings)
 	}
 
 	// Optional auth routes (authentication optional)
@@ -122,6 +131,9 @@ func (r *Router) setupRoutes() {
 
 // setupStaticRoutes configures static file serving for React app
 func (r *Router) setupStaticRoutes() {
+	// Serve uploaded files
+	r.engine.Static("/uploads", "./uploads")
+
 	// Serve assets manually to avoid NoRoute conflicts
 	r.engine.GET("/assets/*filepath", func(c *gin.Context) {
 		filepath := c.Param("filepath")

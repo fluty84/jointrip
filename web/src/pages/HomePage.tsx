@@ -8,46 +8,59 @@ export const HomePage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto">
       {/* Hero Section */}
-      <div className="text-center py-20">
-        <h1 className="text-5xl font-bold text-gray-900 mb-6">
-          Find Your Perfect
-          <span className="text-primary-600"> Travel Companion</span>
-        </h1>
-        <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-          Connect with like-minded travelers, share amazing experiences, and split costs 
-          seamlessly. Your next adventure is just a click away.
-        </p>
-        
-        {isAuthenticated ? (
-          <div className="space-y-4">
-            <p className="text-lg text-gray-700">
-              Welcome back, {user?.firstName}! Ready for your next adventure?
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 hero-gradient opacity-5"></div>
+        <div className="relative text-center py-24 px-4">
+          <div className="animate-fade-in">
+            <h1 className="text-6xl md:text-7xl font-bold mb-8 leading-tight">
+              Find Your Perfect
+              <br />
+              <span className="hero-text">Travel Companion</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-dark-700 mb-12 max-w-4xl mx-auto leading-relaxed">
+              Connect with like-minded travelers, share amazing experiences, and split costs
+              seamlessly. Your next adventure is just a click away.
             </p>
-            <div className="flex justify-center space-x-4">
-              <Link to="/trips" className="btn-primary text-lg px-8 py-3">
-                Browse Trips
-              </Link>
-              <Link to="/profile" className="btn-secondary text-lg px-8 py-3">
-                View Profile
-              </Link>
-            </div>
           </div>
-        ) : (
-          <div className="flex justify-center space-x-4">
-            <Link to="/login" className="btn-primary text-lg px-8 py-3">
-              Get Started
-            </Link>
-            <Link to="/about" className="btn-secondary text-lg px-8 py-3">
-              Learn More
-            </Link>
+
+          <div className="animate-slide-up">
+            {isAuthenticated ? (
+              <div className="space-y-6">
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-soft max-w-md mx-auto">
+                  <p className="text-xl text-dark-700 mb-4">
+                    Welcome back, <span className="font-semibold text-primary-600">{user?.firstName}</span>!
+                  </p>
+                  <p className="text-lg text-dark-600">
+                    Ready for your next adventure?
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row justify-center gap-4">
+                  <Link to="/trips" className="btn-primary text-lg px-10 py-4 shadow-medium">
+                    🌍 Browse Trips
+                  </Link>
+                  <Link to="/profile" className="btn-secondary text-lg px-10 py-4">
+                    👤 View Profile
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col sm:flex-row justify-center gap-4">
+                <Link to="/login" className="btn-primary text-lg px-12 py-4 shadow-medium">
+                  🚀 Get Started
+                </Link>
+                <Link to="/about" className="btn-secondary text-lg px-12 py-4">
+                  📖 Learn More
+                </Link>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
       {/* Features Section */}
-      <div className="py-20 bg-white rounded-lg shadow-sm">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+      <div className="py-24 px-4">
+        <div className="text-center mb-20">
+          <h2 className="text-4xl md:text-5xl font-bold text-dark-900 mb-6">
             Why Choose JoinTrip?
           </h2>
           <p className="text-lg text-gray-600">

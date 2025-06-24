@@ -1,30 +1,36 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
+  /* JoinTrip Brand Colors */
   --color-primary-50: #eff6ff;
   --color-primary-100: #dbeafe;
   --color-primary-200: #bfdbfe;
   --color-primary-300: #93c5fd;
   --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
+  --color-primary-500: #2C7BE5;  /* Azul océano principal */
   --color-primary-600: #2563eb;
   --color-primary-700: #1d4ed8;
   --color-primary-800: #1e40af;
   --color-primary-900: #1e3a8a;
 
-  --color-secondary-50: #f0fdf4;
-  --color-secondary-100: #dcfce7;
-  --color-secondary-200: #bbf7d0;
-  --color-secondary-300: #86efac;
-  --color-secondary-400: #4ade80;
-  --color-secondary-500: #22c55e;
-  --color-secondary-600: #16a34a;
-  --color-secondary-700: #15803d;
-  --color-secondary-800: #166534;
-  --color-secondary-900: #14532d;
+  --color-accent-50: #fef2f2;
+  --color-accent-100: #fee2e2;
+  --color-accent-200: #fecaca;
+  --color-accent-300: #fca5a5;
+  --color-accent-400: #f87171;
+  --color-accent-500: #FF6B6B;  /* Coral suave principal */
+  --color-accent-600: #dc2626;
+  --color-accent-700: #b91c1c;
+  --color-accent-800: #991b1b;
+  --color-accent-900: #7f1d1d;
 
-  --font-family-sans: 'Inter', system-ui, sans-serif;
+  --color-background: #F7E9D7;  /* Arena clara */
+  --color-dark: #2E2E2E;        /* Carbón */
+  --color-light: #FFFFFF;       /* Blanco puro */
+
+  --font-family-sans: 'Poppins', 'Inter', system-ui, sans-serif;
+  --font-family-display: 'Poppins', 'Inter', system-ui, sans-serif;
 }
 
 @layer base {
@@ -33,58 +39,196 @@
   }
 
   body {
-    background-color: theme(colors.gray.50);
-    color: theme(colors.gray.900);
+    background-color: #F7E9D7;
+    color: #2E2E2E;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #F7E9D7;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #93c5fd;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2C7BE5;
   }
 }
 
 @layer components {
+  /* JoinTrip Button Styles */
   .btn-primary {
-    background-color: theme(colors.primary.600);
-    color: theme(colors.white);
-    font-weight: theme(fontWeight.medium);
-    padding: theme(spacing.2) theme(spacing.4);
-    border-radius: theme(borderRadius.lg);
-    transition: background-color theme(transitionDuration.200);
+    background: linear-gradient(135deg, #2C7BE5, #2563eb);
+    color: #FFFFFF;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
   }
 
   .btn-primary:hover {
-    background-color: theme(colors.primary.700);
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
   }
 
   .btn-secondary {
-    background-color: theme(colors.gray.200);
-    color: theme(colors.gray.900);
-    font-weight: theme(fontWeight.medium);
-    padding: theme(spacing.2) theme(spacing.4);
-    border-radius: theme(borderRadius.lg);
-    transition: background-color theme(transitionDuration.200);
+    background-color: #FFFFFF;
+    color: #2563eb;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+    border: 2px solid #bfdbfe;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
   }
 
   .btn-secondary:hover {
-    background-color: theme(colors.gray.300);
+    background-color: #eff6ff;
+    border-color: #93c5fd;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   }
 
+  .btn-accent {
+    background: linear-gradient(135deg, #FF6B6B, #dc2626);
+    color: #FFFFFF;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .btn-accent:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  /* JoinTrip Input Styles */
   .input-field {
     display: block;
     width: 100%;
-    border-radius: theme(borderRadius.lg);
-    border: 1px solid theme(colors.gray.300);
-    box-shadow: theme(boxShadow.sm);
+    border-radius: 1rem;
+    border: 2px solid #bfdbfe;
+    box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+    padding: 0.75rem 1rem;
+    font-family: 'Poppins', sans-serif;
+    background-color: #FFFFFF;
+    transition: all 0.3s ease;
   }
 
   .input-field:focus {
-    border-color: theme(colors.primary.500);
-    outline: 2px solid transparent;
-    outline-offset: 2px;
-    box-shadow: 0 0 0 3px theme(colors.primary.100);
+    border-color: #2C7BE5;
+    outline: none;
+    box-shadow: 0 0 0 4px #dbeafe;
+    transform: translateY(-1px);
   }
 
+  .input-field::placeholder {
+    color: #9ca3af;
+  }
+
+  /* JoinTrip Card Styles */
   .card {
-    background-color: theme(colors.white);
-    border-radius: theme(borderRadius.lg);
-    box-shadow: theme(boxShadow.sm);
-    border: 1px solid theme(colors.gray.200);
-    padding: theme(spacing.6);
+    background-color: #FFFFFF;
+    border-radius: 1.5rem;
+    box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #dbeafe;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .card:hover {
+    box-shadow: 0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transform: translateY(-2px);
+  }
+
+  /* JoinTrip Badge Styles */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .badge-primary {
+    background-color: #dbeafe;
+    color: #1e40af;
+  }
+
+  .badge-accent {
+    background-color: #fee2e2;
+    color: #991b1b;
+  }
+
+  .badge-success {
+    background-color: #dcfce7;
+    color: #166534;
+  }
+
+  /* JoinTrip Navigation Styles */
+  .nav-link {
+    font-weight: 500;
+    color: #4f4f4f;
+    transition: all 0.2s ease;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .nav-link:hover {
+    color: #2563eb;
+  }
+
+  .nav-link.active {
+    color: #2563eb;
+    font-weight: 600;
+  }
+
+  /* JoinTrip Hero Section */
+  .hero-gradient {
+    background: linear-gradient(135deg,
+      #2C7BE5 0%,
+      #2563eb 50%,
+      #FF6B6B 100%);
+  }
+
+  .hero-text {
+    background: linear-gradient(135deg,
+      #2563eb,
+      #FF6B6B);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 }

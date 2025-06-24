@@ -128,6 +128,11 @@ class AuthService {
     const response = await this.apiClient.get('/profile');
     return response.data.user;
   }
+
+  async updateProfile(profileData: any): Promise<any> {
+    const response = await this.apiClient.put('/profile', profileData);
+    return response.data.user;
+  }
 }
 
 export const authService = new AuthService();

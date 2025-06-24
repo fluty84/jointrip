@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import logoImage from '../../assets/logo_s.png';
 
 export const Navbar: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
@@ -16,36 +17,44 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200">
+    <nav className="bg-white/95 backdrop-blur-md shadow-soft border-b border-primary-100 sticky top-0 z-50">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-18">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">J</span>
+          <Link to="/" className="flex items-center space-x-3 group">
+            <div className="relative">
+              <img
+                src={logoImage}
+                alt="JoinTrip Logo"
+                className="w-10 h-10 transition-transform duration-300 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-500 rounded-lg opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
             </div>
-            <span className="text-xl font-bold text-gray-900">JoinTrip</span>
+            <span className="text-2xl font-bold hero-text">JoinTrip</span>
           </Link>
 
           {/* Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link 
-              to="/" 
-              className="text-gray-600 hover:text-gray-900 transition-colors"
+            <Link
+              to="/"
+              className="nav-link relative group"
             >
               Home
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 transition-all duration-300 group-hover:w-full"></span>
             </Link>
-            <Link 
-              to="/trips" 
-              className="text-gray-600 hover:text-gray-900 transition-colors"
+            <Link
+              to="/trips"
+              className="nav-link relative group"
             >
               Trips
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 transition-all duration-300 group-hover:w-full"></span>
             </Link>
-            <Link 
-              to="/about" 
-              className="text-gray-600 hover:text-gray-900 transition-colors"
+            <Link
+              to="/about"
+              className="nav-link relative group"
             >
               About
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 transition-all duration-300 group-hover:w-full"></span>
             </Link>
           </div>
 
@@ -53,43 +62,46 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center space-x-4">
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
-                <Link 
-                  to="/profile" 
-                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+                <Link
+                  to="/profile"
+                  className="flex items-center space-x-3 nav-link group"
                 >
                   {user?.picture ? (
-                    <img 
-                      src={user.picture} 
-                      alt={`${user.firstName} ${user.lastName}`}
-                      className="w-8 h-8 rounded-full"
-                    />
+                    <div className="relative">
+                      <img
+                        src={user.picture}
+                        alt={`${user.firstName} ${user.lastName}`}
+                        className="w-10 h-10 rounded-full border-2 border-primary-200 transition-all duration-300 group-hover:border-primary-400 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary-500 to-accent-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                    </div>
                   ) : (
-                    <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                      <span className="text-gray-600 text-sm font-medium">
+                    <div className="w-10 h-10 bg-gradient-to-r from-primary-100 to-accent-100 rounded-full flex items-center justify-center border-2 border-primary-200 transition-all duration-300 group-hover:border-primary-400 group-hover:scale-105">
+                      <span className="text-primary-700 text-sm font-semibold">
                         {user?.firstName?.[0]}{user?.lastName?.[0]}
                       </span>
                     </div>
                   )}
-                  <span className="hidden md:block">{user?.firstName}</span>
+                  <span className="hidden md:block font-medium">{user?.firstName}</span>
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="btn-secondary text-sm"
+                  className="btn-secondary text-sm px-4 py-2"
                 >
                   Logout
                 </button>
               </div>
             ) : (
               <div className="flex items-center space-x-4">
-                <Link 
-                  to="/login" 
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                <Link
+                  to="/login"
+                  className="nav-link"
                 >
                   Login
                 </Link>
-                <Link 
-                  to="/login" 
-                  className="btn-primary text-sm"
+                <Link
+                  to="/login"
+                  className="btn-primary text-sm px-6 py-2"
                 >
                   Get Started
                 </Link>
