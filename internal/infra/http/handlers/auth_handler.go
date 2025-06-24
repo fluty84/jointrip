@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"jointrip/internal/app/auth"
+	"jointrip/internal/domain/user"
 	"jointrip/internal/infra/http/middleware"
 
 	"github.com/gin-gonic/gin"
@@ -34,6 +35,22 @@ type LoginRequest struct {
 // RefreshTokenRequest represents a token refresh request
 type RefreshTokenRequest struct {
 	RefreshToken string `json:"refresh_token" binding:"required"`
+}
+
+// UpdateProfileRequest represents a profile update request
+type UpdateProfileRequest struct {
+	FirstName          *string  `json:"first_name,omitempty"`
+	LastName           *string  `json:"last_name,omitempty"`
+	Bio                *string  `json:"bio,omitempty"`
+	Location           *string  `json:"location,omitempty"`
+	Phone              *string  `json:"phone,omitempty"`
+	Website            *string  `json:"website,omitempty"`
+	Languages          []string `json:"languages,omitempty"`
+	Interests          []string `json:"interests,omitempty"`
+	TravelStyle        *string  `json:"travel_style,omitempty"`
+	ProfileVisibility  *string  `json:"profile_visibility,omitempty"`
+	EmailNotifications *bool    `json:"email_notifications,omitempty"`
+	PushNotifications  *bool    `json:"push_notifications,omitempty"`
 }
 
 // GetGoogleAuthURL returns the Google OAuth authorization URL
@@ -203,5 +220,80 @@ func (h *AuthHandler) ValidateToken(c *gin.Context) {
 		"valid":   true,
 		"user_id": user.ID,
 		"email":   user.Email,
+	})
+}
+
+// UpdateProfile updates the current user's profile
+func (h *AuthHandler) UpdateProfile(c *gin.Context) {
+	currentUser, err := middleware.GetCurrentUser(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Authentication required",
+		})
+		return
+	}
+
+	var req UpdateProfileRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid request format",
+		})
+		return
+	}
+
+	// Update user fields if provided
+	if req.FirstName != nil {
+		currentUser.FirstName = *req.FirstName
+	}
+	if req.LastName != nil {
+		currentUser.LastName = *req.LastName
+	}
+	if req.Bio != nil {
+		currentUser.Bio = *req.Bio
+	}
+	if req.Location != nil {
+		currentUser.Location = *req.Location
+	}
+	if req.Phone != nil {
+		currentUser.Phone = req.Phone
+	}
+	if req.Website != nil {
+		currentUser.Website = *req.Website
+	}
+	if req.Languages != nil {
+		currentUser.Languages = req.Languages
+	}
+	if req.Interests != nil {
+		currentUser.Interests = req.Interests
+	}
+	if req.TravelStyle != nil {
+		travelStyle := user.TravelStyle(*req.TravelStyle)
+		currentUser.TravelStyle = &travelStyle
+	}
+	if req.ProfileVisibility != nil {
+		currentUser.ProfileVisibility = user.PrivacyLevel(*req.ProfileVisibility)
+	}
+	if req.EmailNotifications != nil {
+		currentUser.EmailNotifications = *req.EmailNotifications
+	}
+	if req.PushNotifications != nil {
+		currentUser.PushNotifications = *req.PushNotifications
+	}
+
+	// Update the user in the database
+	err = h.authService.UpdateUser(c.Request.Context(), currentUser)
+	if err != nil {
+		h.logger.WithError(err).Error("Failed to update user profile")
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to update profile",
+		})
+		return
+	}
+
+	h.logger.WithField("user_id", currentUser.ID).Info("User profile updated successfully")
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Profile updated successfully",
+		"user":    currentUser,
 	})
 }

@@ -104,6 +104,7 @@ func (r *Router) setupRoutes() {
 	{
 		// User profile routes
 		protected.GET("/profile", r.authHandler.GetProfile)
+		protected.PUT("/profile", r.authHandler.UpdateProfile)
 		protected.POST("/auth/logout-all", r.authHandler.LogoutAll)
 		protected.GET("/auth/validate", r.authHandler.ValidateToken)
 	}

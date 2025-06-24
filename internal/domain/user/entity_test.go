@@ -74,7 +74,6 @@ func TestNewUser(t *testing.T) {
 				assert.Equal(t, tt.lastName, user.LastName)
 				assert.Equal(t, tt.googlePhotoURL, user.GooglePhotoURL)
 				assert.Equal(t, tt.googlePhotoURL, user.ProfilePhotoURL)
-				assert.Equal(t, VerificationStatusUnverified, user.VerificationStatus)
 				assert.Equal(t, float64(0), user.ReputationScore)
 				assert.Equal(t, PrivacyLevelPublic, user.PrivacyLevel)
 				assert.True(t, user.IsActive)
@@ -135,17 +134,6 @@ func TestUser_UpdateLastLogin(t *testing.T) {
 	assert.True(t, time.Since(*user.LastLogin) < time.Second)
 }
 
-func TestUser_SetVerificationStatus(t *testing.T) {
-	user, err := NewUser("google123", "test@example.com", "John", "Doe", "photo.jpg")
-	require.NoError(t, err)
-
-	assert.Equal(t, VerificationStatusUnverified, user.VerificationStatus)
-
-	user.SetVerificationStatus(VerificationStatusVerified)
-
-	assert.Equal(t, VerificationStatusVerified, user.VerificationStatus)
-}
-
 func TestUser_SetPrivacyLevel(t *testing.T) {
 	user, err := NewUser("google123", "test@example.com", "John", "Doe", "photo.jpg")
 	require.NoError(t, err)
@@ -180,34 +168,18 @@ func TestUser_Activate(t *testing.T) {
 	assert.True(t, user.IsActive)
 }
 
-func TestUser_IsVerified(t *testing.T) {
-	user, err := NewUser("google123", "test@example.com", "John", "Doe", "photo.jpg")
-	require.NoError(t, err)
-
-	assert.False(t, user.IsVerified())
-
-	user.SetVerificationStatus(VerificationStatusVerified)
-
-	assert.True(t, user.IsVerified())
-}
-
 func TestUser_CanCreateTrips(t *testing.T) {
 	user, err := NewUser("google123", "test@example.com", "John", "Doe", "photo.jpg")
 	require.NoError(t, err)
 
-	// Initially cannot create trips (not verified)
-	assert.False(t, user.CanCreateTrips())
-
-	// Verify user
-	user.SetVerificationStatus(VerificationStatusVerified)
+	// Initially can create trips (active user)
 	assert.True(t, user.CanCreateTrips())
 
 	// Deactivate user
 	user.Deactivate()
 	assert.False(t, user.CanCreateTrips())
 
-	// Reactivate but not verified
+	// Reactivate user
 	user.Activate()
-	user.SetVerificationStatus(VerificationStatusUnverified)
-	assert.False(t, user.CanCreateTrips())
+	assert.True(t, user.CanCreateTrips())
 }

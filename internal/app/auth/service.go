@@ -52,11 +52,11 @@ type JWTManager interface {
 
 // Service provides authentication business logic
 type Service struct {
-	userRepo      user.Repository
-	sessionRepo   session.Repository
-	googleClient  GoogleOAuthClient
-	jwtManager    JWTManager
-	maxSessions   int
+	userRepo     user.Repository
+	sessionRepo  session.Repository
+	googleClient GoogleOAuthClient
+	jwtManager   JWTManager
+	maxSessions  int
 }
 
 // NewService creates a new authentication service
@@ -278,4 +278,9 @@ func (s *Service) enforceSessionLimit(ctx context.Context, userID uuid.UUID) err
 	}
 
 	return nil
+}
+
+// UpdateUser updates a user's profile information
+func (s *Service) UpdateUser(ctx context.Context, u *user.User) error {
+	return s.userRepo.Update(ctx, u)
 }
