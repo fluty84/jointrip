@@ -71,3 +71,6 @@ debug
 
 # Database volume (if using Docker)
 /data/mysql/
+
+# Auth
+google_auth.json
