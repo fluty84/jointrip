@@ -12,8 +12,8 @@ interface User {
   location?: string;
   phone?: string;
   website?: string;
-  languages: string[];
-  interests: string[];
+  languages: string[] | null;
+  interests: string[] | null;
   travel_style?: string;
   profile_photo_url: string;
   google_photo_url: string;

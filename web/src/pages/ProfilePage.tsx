@@ -12,8 +12,8 @@ interface User {
   location?: string;
   phone?: string;
   website?: string;
-  languages: string[];
-  interests: string[];
+  languages: string[] | null;
+  interests: string[] | null;
   travel_style?: string;
   profile_photo_url: string;
   google_photo_url: string;
@@ -231,7 +231,7 @@ export const ProfilePage: React.FC = () => {
                 </div>
               )}
 
-              {user.languages.length > 0 && (
+              {user.languages && user.languages.length > 0 && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Languages
@@ -249,7 +249,7 @@ export const ProfilePage: React.FC = () => {
                 </div>
               )}
 
-              {user.interests.length > 0 && (
+              {user.interests && user.interests.length > 0 && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Interests
@@ -267,7 +267,7 @@ export const ProfilePage: React.FC = () => {
                 </div>
               )}
 
-              {!user.travel_style && user.languages.length === 0 && user.interests.length === 0 && (
+              {!user.travel_style && (!user.languages || user.languages.length === 0) && (!user.interests || user.interests.length === 0) && (
                 <p className="text-gray-600 text-center py-8">
                   No travel preferences set yet.
                   <br />
