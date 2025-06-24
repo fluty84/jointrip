@@ -78,11 +78,11 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	h.logger.WithField("user_id", response.User.ID).Info("User logged in successfully")
 
 	c.JSON(http.StatusOK, gin.H{
-		"user":          response.User,
-		"access_token":  response.AccessToken,
-		"refresh_token": response.RefreshToken,
-		"expires_at":    response.ExpiresAt,
-		"token_type":    "Bearer",
+		"user":         response.User,
+		"accessToken":  response.AccessToken,
+		"refreshToken": response.RefreshToken,
+		"expiresAt":    response.ExpiresAt,
+		"tokenType":    "Bearer",
 	})
 }
 
@@ -106,9 +106,9 @@ func (h *AuthHandler) RefreshToken(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"access_token": response.AccessToken,
-		"expires_at":   response.ExpiresAt,
-		"token_type":   "Bearer",
+		"accessToken": response.AccessToken,
+		"expiresAt":   response.ExpiresAt,
+		"tokenType":   "Bearer",
 	})
 }
 

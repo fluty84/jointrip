@@ -4,6 +4,7 @@ import { Navbar } from './components/layout/Navbar';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { AuthCallbackPage } from './pages/AuthCallbackPage';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/auth/google/callback" element={<AuthCallbackPage />} />
               <Route
                 path="/profile"
                 element={

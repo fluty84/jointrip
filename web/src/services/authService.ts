@@ -87,16 +87,31 @@ class AuthService {
       code,
       state,
     });
+
+    // Store tokens in localStorage
+    if (response.data.accessToken) {
+      localStorage.setItem('accessToken', response.data.accessToken);
+    }
+    if (response.data.refreshToken) {
+      localStorage.setItem('refreshToken', response.data.refreshToken);
+    }
+
     return response.data;
   }
 
   async logout(): Promise<void> {
-    await this.apiClient.post('/auth/logout');
+    try {
+      await this.apiClient.post('/auth/logout');
+    } finally {
+      // Always clear tokens from localStorage
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+    }
   }
 
   async refreshToken(refreshToken: string): Promise<any> {
     return await this.apiClient.post('/auth/refresh', {
-      refresh_token: refreshToken,
+      refreshToken: refreshToken,
     });
   }
 
