@@ -10,6 +10,18 @@ interface User {
   isVerified: boolean;
 }
 
+// Helper function to map API user data to AuthContext User format
+const mapApiUserToUser = (apiUser: any): User => {
+  return {
+    id: apiUser.id,
+    email: apiUser.email,
+    firstName: apiUser.first_name || apiUser.firstName,
+    lastName: apiUser.last_name || apiUser.lastName,
+    picture: apiUser.profile_photo_url || apiUser.google_photo_url || apiUser.picture,
+    isVerified: apiUser.is_verified || apiUser.isVerified || false
+  };
+};
+
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
@@ -40,7 +52,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           const isValid = await authService.validateToken();
           if (isValid) {
             const profile = await authService.getProfile();
-            setUser(profile);
+            setUser(mapApiUserToUser(profile));
           } else {
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
@@ -65,8 +77,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       localStorage.setItem('accessToken', response.accessToken);
       localStorage.setItem('refreshToken', response.refreshToken);
-      
-      setUser(response.user);
+
+      setUser(mapApiUserToUser(response.user));
     } catch (error) {
       console.error('Login failed:', error);
       throw error;
