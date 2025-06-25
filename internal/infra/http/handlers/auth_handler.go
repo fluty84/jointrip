@@ -246,47 +246,61 @@ func (h *AuthHandler) UpdateProfile(c *gin.Context) {
 		return
 	}
 
-	// Update user fields if provided
+	// Prepare profile data for update
+	profileData := make(map[string]interface{})
+
 	if req.FirstName != nil {
+		profileData["first_name"] = *req.FirstName
 		currentUser.FirstName = *req.FirstName
 	}
 	if req.LastName != nil {
+		profileData["last_name"] = *req.LastName
 		currentUser.LastName = *req.LastName
 	}
 	if req.Bio != nil {
+		profileData["bio"] = *req.Bio
 		currentUser.Bio = *req.Bio
 	}
 	if req.Location != nil {
+		profileData["location"] = *req.Location
 		currentUser.Location = *req.Location
 	}
 	if req.Phone != nil {
+		profileData["phone"] = req.Phone
 		currentUser.Phone = req.Phone
 	}
 	if req.Website != nil {
+		profileData["website"] = *req.Website
 		currentUser.Website = *req.Website
 	}
 	if req.Languages != nil {
+		profileData["languages"] = req.Languages
 		currentUser.Languages = req.Languages
 	}
 	if req.Interests != nil {
+		profileData["interests"] = req.Interests
 		currentUser.Interests = req.Interests
 	}
 	if req.TravelStyle != nil {
+		profileData["travel_style"] = *req.TravelStyle
 		travelStyle := user.TravelStyle(*req.TravelStyle)
 		currentUser.TravelStyle = &travelStyle
 	}
 	if req.ProfileVisibility != nil {
+		profileData["profile_visibility"] = *req.ProfileVisibility
 		currentUser.ProfileVisibility = user.PrivacyLevel(*req.ProfileVisibility)
 	}
 	if req.EmailNotifications != nil {
+		profileData["email_notifications"] = *req.EmailNotifications
 		currentUser.EmailNotifications = *req.EmailNotifications
 	}
 	if req.PushNotifications != nil {
+		profileData["push_notifications"] = *req.PushNotifications
 		currentUser.PushNotifications = *req.PushNotifications
 	}
 
-	// Update the user in the database
-	err = h.authService.UpdateUser(c.Request.Context(), currentUser)
+	// Update the user profile in the database using the new method
+	err = h.authService.UpdateUserProfile(c.Request.Context(), currentUser.ID, profileData)
 	if err != nil {
 		h.logger.WithError(err).Error("Failed to update user profile")
 		c.JSON(http.StatusInternalServerError, gin.H{

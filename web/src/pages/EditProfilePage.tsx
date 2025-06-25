@@ -31,6 +31,8 @@ interface FormData {
   website: string;
   languages: string[];
   interests: string[];
+  languages_input?: string;
+  interests_input?: string;
   travel_style: string;
   profile_visibility: string;
   email_notifications: boolean;
@@ -78,6 +80,8 @@ export const EditProfilePage: React.FC = () => {
         website: userData.website || '',
         languages: userData.languages || [],
         interests: userData.interests || [],
+        languages_input: (userData.languages || []).join(', '),
+        interests_input: (userData.interests || []).join(', '),
         travel_style: userData.travel_style || '',
         profile_visibility: userData.profile_visibility || 'public',
         email_notifications: userData.email_notifications ?? true,
@@ -97,7 +101,22 @@ export const EditProfilePage: React.FC = () => {
     setSuccess('');
 
     try {
-      await authService.updateProfile(formData);
+      // Process array inputs before submitting
+      const processedData = { ...formData };
+
+      if (formData.languages_input) {
+        processedData.languages = formData.languages_input.split(',').map(item => item.trim()).filter(item => item);
+      }
+
+      if (formData.interests_input) {
+        processedData.interests = formData.interests_input.split(',').map(item => item.trim()).filter(item => item);
+      }
+
+      // Remove temporary input fields
+      delete processedData.languages_input;
+      delete processedData.interests_input;
+
+      await authService.updateProfile(processedData);
       setSuccess('Profile updated successfully!');
       setTimeout(() => {
         navigate('/profile');
@@ -121,6 +140,12 @@ export const EditProfilePage: React.FC = () => {
   };
 
   const handleArrayInput = (name: 'languages' | 'interests', value: string) => {
+    // Store the raw string value temporarily
+    setFormData(prev => ({ ...prev, [`${name}_input`]: value }));
+  };
+
+  const handleArrayInputBlur = (name: 'languages' | 'interests', value: string) => {
+    // Process into array when user stops typing
     const items = value.split(',').map(item => item.trim()).filter(item => item);
     setFormData(prev => ({ ...prev, [name]: items }));
   };
@@ -292,8 +317,9 @@ export const EditProfilePage: React.FC = () => {
               </label>
               <input
                 type="text"
-                value={formData.languages.join(', ')}
+                value={formData.languages_input || ''}
                 onChange={(e) => handleArrayInput('languages', e.target.value)}
+                onBlur={(e) => handleArrayInputBlur('languages', e.target.value)}
                 className="input-field"
                 placeholder="English, Spanish, French"
               />
@@ -304,8 +330,9 @@ export const EditProfilePage: React.FC = () => {
               </label>
               <input
                 type="text"
-                value={formData.interests.join(', ')}
+                value={formData.interests_input || ''}
                 onChange={(e) => handleArrayInput('interests', e.target.value)}
+                onBlur={(e) => handleArrayInputBlur('interests', e.target.value)}
                 className="input-field"
                 placeholder="Photography, Hiking, Food, Culture"
               />

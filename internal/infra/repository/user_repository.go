@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strings"
+	"time"
 
 	"jointrip/internal/domain/user"
 
@@ -60,7 +62,7 @@ func (r *UserRepository) GetByID(ctx context.Context, id uuid.UUID) (*user.User,
 			   date_of_birth, gender, bio, profile_photo_url, google_photo_url,
 			   reputation_score, privacy_level, is_active,
 			   last_login, created_at, updated_at
-		FROM users 
+		FROM users
 		WHERE id = $1 AND is_active = true`
 
 	return r.scanUser(r.db.QueryRowContext(ctx, query, id))
@@ -124,6 +126,65 @@ func (r *UserRepository) Update(ctx context.Context, u *user.User) error {
 
 	if err != nil {
 		return fmt.Errorf("failed to update user: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return user.ErrUserNotFound
+	}
+
+	return nil
+}
+
+// UpdateProfile updates user profile fields specifically
+func (r *UserRepository) UpdateProfile(ctx context.Context, userID uuid.UUID, profileData map[string]interface{}) error {
+	// Build dynamic query based on provided fields
+	setParts := []string{}
+	args := []interface{}{userID}
+	argIndex := 2
+
+	for field, value := range profileData {
+		switch field {
+		case "first_name", "last_name", "bio", "location", "website", "phone":
+			setParts = append(setParts, fmt.Sprintf("%s = $%d", field, argIndex))
+			args = append(args, value)
+			argIndex++
+		case "languages", "interests":
+			setParts = append(setParts, fmt.Sprintf("%s = $%d", field, argIndex))
+			if strSlice, ok := value.([]string); ok {
+				args = append(args, pq.Array(strSlice))
+			} else {
+				args = append(args, pq.Array([]string{}))
+			}
+			argIndex++
+		case "travel_style", "profile_visibility":
+			setParts = append(setParts, fmt.Sprintf("%s = $%d", field, argIndex))
+			args = append(args, value)
+			argIndex++
+		case "email_notifications", "push_notifications":
+			setParts = append(setParts, fmt.Sprintf("%s = $%d", field, argIndex))
+			args = append(args, value)
+			argIndex++
+		}
+	}
+
+	if len(setParts) == 0 {
+		return nil // Nothing to update
+	}
+
+	// Add updated_at
+	setParts = append(setParts, fmt.Sprintf("updated_at = $%d", argIndex))
+	args = append(args, time.Now())
+
+	query := fmt.Sprintf("UPDATE users SET %s WHERE id = $1", strings.Join(setParts, ", "))
+
+	result, err := r.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		return fmt.Errorf("failed to update user profile: %w", err)
 	}
 
 	rowsAffected, err := result.RowsAffected()

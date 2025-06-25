@@ -284,3 +284,59 @@ func (s *Service) enforceSessionLimit(ctx context.Context, userID uuid.UUID) err
 func (s *Service) UpdateUser(ctx context.Context, u *user.User) error {
 	return s.userRepo.Update(ctx, u)
 }
+
+// UpdateUserProfile updates specific user profile fields
+func (s *Service) UpdateUserProfile(ctx context.Context, userID uuid.UUID, profileData map[string]interface{}) error {
+	// Check if the repository has the UpdateProfile method
+	if repo, ok := s.userRepo.(interface {
+		UpdateProfile(ctx context.Context, userID uuid.UUID, profileData map[string]interface{}) error
+	}); ok {
+		return repo.UpdateProfile(ctx, userID, profileData)
+	}
+
+	// Fallback to getting the user and updating normally
+	u, err := s.userRepo.GetByID(ctx, userID)
+	if err != nil {
+		return err
+	}
+
+	// Update fields in memory
+	for field, value := range profileData {
+		switch field {
+		case "first_name":
+			if str, ok := value.(string); ok {
+				u.FirstName = str
+			}
+		case "last_name":
+			if str, ok := value.(string); ok {
+				u.LastName = str
+			}
+		case "bio":
+			if str, ok := value.(string); ok {
+				u.Bio = str
+			}
+		case "location":
+			if str, ok := value.(string); ok {
+				u.Location = str
+			}
+		case "website":
+			if str, ok := value.(string); ok {
+				u.Website = str
+			}
+		case "phone":
+			if str, ok := value.(*string); ok {
+				u.Phone = str
+			}
+		case "languages":
+			if strSlice, ok := value.([]string); ok {
+				u.Languages = strSlice
+			}
+		case "interests":
+			if strSlice, ok := value.([]string); ok {
+				u.Interests = strSlice
+			}
+		}
+	}
+
+	return s.userRepo.Update(ctx, u)
+}
