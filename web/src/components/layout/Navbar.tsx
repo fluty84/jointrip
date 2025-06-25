@@ -25,7 +25,7 @@ export const Navbar: React.FC = () => {
               <img
                 src="/img/logo_s.png"
                 alt="JoinTrip Logo"
-                className="w-10 h-10 transition-transform duration-300 group-hover:scale-110"
+                className="h-10 w-auto transition-transform duration-300 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-500 rounded-lg opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
             </div>
