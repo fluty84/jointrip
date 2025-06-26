@@ -59,8 +59,11 @@ func main() {
 		cfg.Session.MaxSessionsPerUser,
 	)
 
+	// Get embedded web filesystem
+	webFS := GetWebFS()
+
 	// Initialize HTTP router
-	httpRouter := router.NewRouter(cfg, authService, log)
+	httpRouter := router.NewRouter(cfg, authService, log, webFS)
 
 	// Create HTTP server
 	server := &http.Server{

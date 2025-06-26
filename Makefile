@@ -14,7 +14,7 @@ YELLOW=\033[1;33m
 BLUE=\033[0;34m
 NC=\033[0m # No Color
 
-.PHONY: help setup db-up db-down db-reset migrate-up migrate-down migrate-create run test test-verbose clean build docker-build docker-run dev
+.PHONY: help setup db-up db-down db-reset migrate-up migrate-down migrate-create run test test-verbose clean build build-frontend build-quick dev dev-full docker-build docker-run
 
 # Default target
 help: ## Show this help message
@@ -76,14 +76,25 @@ migrate-create: ## Create a new migration (usage: make migrate-create name=migra
 # Application commands
 run: ## Run the application
 	@echo "$(YELLOW)Starting JoinTrip API...$(NC)"
-	@$(GO_CMD) run main.go
+	@$(GO_CMD) run main.go embed.go
 
 dev: db-up migrate-up run ## Start development environment (database + migrations + app)
 
-build: ## Build the application
-	@echo "$(YELLOW)Building application...$(NC)"
-	@$(GO_CMD) build -o bin/$(APP_NAME) main.go
+dev-full: ## Start full development environment with frontend build
+	@./scripts/dev.sh
+
+build-frontend: ## Build React frontend
+	@echo "$(YELLOW)Building React frontend...$(NC)"
+	@cd web && source ~/.nvm/nvm.sh && npm run build
+	@echo "$(GREEN)Frontend build complete!$(NC)"
+
+build: build-frontend ## Build the full application (frontend + backend)
+	@echo "$(YELLOW)Building Go backend with embedded frontend...$(NC)"
+	@$(GO_CMD) build -o bin/$(APP_NAME) main.go embed.go
 	@echo "$(GREEN)Build complete! Binary: bin/$(APP_NAME)$(NC)"
+
+build-quick: ## Quick build using build script
+	@./scripts/build.sh
 
 # Testing commands
 test: ## Run tests
