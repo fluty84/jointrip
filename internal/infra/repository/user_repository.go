@@ -28,17 +28,19 @@ func (r *UserRepository) Create(ctx context.Context, u *user.User) error {
 	query := `
 		INSERT INTO users (
 			id, google_id, email, username, first_name, last_name, phone,
-			date_of_birth, gender, bio, profile_photo_url, google_photo_url,
-			reputation_score, privacy_level, is_active,
+			date_of_birth, gender, bio, location, website, languages, interests,
+			travel_style, profile_visibility, email_notifications, push_notifications,
+			profile_photo_url, google_photo_url, reputation_score, privacy_level, is_active,
 			last_login, created_at, updated_at
 		) VALUES (
-			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18
+			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26
 		)`
 
 	_, err := r.db.ExecContext(ctx, query,
 		u.ID, u.GoogleID, u.Email, u.Username, u.FirstName, u.LastName, u.Phone,
-		u.DateOfBirth, u.Gender, u.Bio, u.ProfilePhotoURL, u.GooglePhotoURL,
-		u.ReputationScore, u.PrivacyLevel, u.IsActive,
+		u.DateOfBirth, u.Gender, u.Bio, u.Location, u.Website, pq.Array(u.Languages), pq.Array(u.Interests),
+		u.TravelStyle, u.ProfileVisibility, u.EmailNotifications, u.PushNotifications,
+		u.ProfilePhotoURL, u.GooglePhotoURL, u.ReputationScore, u.PrivacyLevel, u.IsActive,
 		u.LastLogin, u.CreatedAt, u.UpdatedAt,
 	)
 
@@ -59,8 +61,9 @@ func (r *UserRepository) Create(ctx context.Context, u *user.User) error {
 func (r *UserRepository) GetByID(ctx context.Context, id uuid.UUID) (*user.User, error) {
 	query := `
 		SELECT id, google_id, email, username, first_name, last_name, phone,
-			   date_of_birth, gender, bio, profile_photo_url, google_photo_url,
-			   reputation_score, privacy_level, is_active,
+			   date_of_birth, gender, bio, location, website, languages, interests,
+			   travel_style, profile_visibility, email_notifications, push_notifications,
+			   profile_photo_url, google_photo_url, reputation_score, privacy_level, is_active,
 			   last_login, created_at, updated_at
 		FROM users
 		WHERE id = $1 AND is_active = true`
@@ -72,8 +75,9 @@ func (r *UserRepository) GetByID(ctx context.Context, id uuid.UUID) (*user.User,
 func (r *UserRepository) GetByGoogleID(ctx context.Context, googleID string) (*user.User, error) {
 	query := `
 		SELECT id, google_id, email, username, first_name, last_name, phone,
-			   date_of_birth, gender, bio, profile_photo_url, google_photo_url,
-			   reputation_score, privacy_level, is_active,
+			   date_of_birth, gender, bio, location, website, languages, interests,
+			   travel_style, profile_visibility, email_notifications, push_notifications,
+			   profile_photo_url, google_photo_url, reputation_score, privacy_level, is_active,
 			   last_login, created_at, updated_at
 		FROM users
 		WHERE google_id = $1 AND is_active = true`
@@ -85,8 +89,9 @@ func (r *UserRepository) GetByGoogleID(ctx context.Context, googleID string) (*u
 func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*user.User, error) {
 	query := `
 		SELECT id, google_id, email, username, first_name, last_name, phone,
-			   date_of_birth, gender, bio, profile_photo_url, google_photo_url,
-			   reputation_score, privacy_level, is_active,
+			   date_of_birth, gender, bio, location, website, languages, interests,
+			   travel_style, profile_visibility, email_notifications, push_notifications,
+			   profile_photo_url, google_photo_url, reputation_score, privacy_level, is_active,
 			   last_login, created_at, updated_at
 		FROM users
 		WHERE email = $1 AND is_active = true`
@@ -98,8 +103,9 @@ func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*user.Us
 func (r *UserRepository) GetByUsername(ctx context.Context, username string) (*user.User, error) {
 	query := `
 		SELECT id, google_id, email, username, first_name, last_name, phone,
-			   date_of_birth, gender, bio, profile_photo_url, google_photo_url,
-			   reputation_score, privacy_level, is_active,
+			   date_of_birth, gender, bio, location, website, languages, interests,
+			   travel_style, profile_visibility, email_notifications, push_notifications,
+			   profile_photo_url, google_photo_url, reputation_score, privacy_level, is_active,
 			   last_login, created_at, updated_at
 		FROM users
 		WHERE username = $1 AND is_active = true`
@@ -112,14 +118,18 @@ func (r *UserRepository) Update(ctx context.Context, u *user.User) error {
 	query := `
 		UPDATE users SET
 			email = $2, username = $3, first_name = $4, last_name = $5, phone = $6,
-			date_of_birth = $7, gender = $8, bio = $9, profile_photo_url = $10,
-			reputation_score = $11, privacy_level = $12,
-			is_active = $13, last_login = $14, updated_at = $15
+			date_of_birth = $7, gender = $8, bio = $9, location = $10, website = $11,
+			languages = $12, interests = $13, travel_style = $14, profile_visibility = $15,
+			email_notifications = $16, push_notifications = $17, profile_photo_url = $18,
+			reputation_score = $19, privacy_level = $20,
+			is_active = $21, last_login = $22, updated_at = $23
 		WHERE id = $1`
 
 	result, err := r.db.ExecContext(ctx, query,
 		u.ID, u.Email, u.Username, u.FirstName, u.LastName, u.Phone,
-		u.DateOfBirth, u.Gender, u.Bio, u.ProfilePhotoURL,
+		u.DateOfBirth, u.Gender, u.Bio, u.Location, u.Website,
+		pq.Array(u.Languages), pq.Array(u.Interests), u.TravelStyle, u.ProfileVisibility,
+		u.EmailNotifications, u.PushNotifications, u.ProfilePhotoURL,
 		u.ReputationScore, u.PrivacyLevel,
 		u.IsActive, u.LastLogin, u.UpdatedAt,
 	)
@@ -224,8 +234,9 @@ func (r *UserRepository) Delete(ctx context.Context, id uuid.UUID) error {
 func (r *UserRepository) List(ctx context.Context, limit, offset int) ([]*user.User, error) {
 	query := `
 		SELECT id, google_id, email, username, first_name, last_name, phone,
-			   date_of_birth, gender, bio, profile_photo_url, google_photo_url,
-			   reputation_score, privacy_level, is_active,
+			   date_of_birth, gender, bio, location, website, languages, interests,
+			   travel_style, profile_visibility, email_notifications, push_notifications,
+			   profile_photo_url, google_photo_url, reputation_score, privacy_level, is_active,
 			   last_login, created_at, updated_at
 		FROM users
 		WHERE is_active = true
@@ -285,8 +296,9 @@ func (r *UserRepository) scanUser(row *sql.Row) (*user.User, error) {
 	u := &user.User{}
 	err := row.Scan(
 		&u.ID, &u.GoogleID, &u.Email, &u.Username, &u.FirstName, &u.LastName, &u.Phone,
-		&u.DateOfBirth, &u.Gender, &u.Bio, &u.ProfilePhotoURL, &u.GooglePhotoURL,
-		&u.ReputationScore, &u.PrivacyLevel, &u.IsActive,
+		&u.DateOfBirth, &u.Gender, &u.Bio, &u.Location, &u.Website, pq.Array(&u.Languages), pq.Array(&u.Interests),
+		&u.TravelStyle, &u.ProfileVisibility, &u.EmailNotifications, &u.PushNotifications,
+		&u.ProfilePhotoURL, &u.GooglePhotoURL, &u.ReputationScore, &u.PrivacyLevel, &u.IsActive,
 		&u.LastLogin, &u.CreatedAt, &u.UpdatedAt,
 	)
 
@@ -305,8 +317,9 @@ func (r *UserRepository) scanUserFromRows(rows *sql.Rows) (*user.User, error) {
 	u := &user.User{}
 	err := rows.Scan(
 		&u.ID, &u.GoogleID, &u.Email, &u.Username, &u.FirstName, &u.LastName, &u.Phone,
-		&u.DateOfBirth, &u.Gender, &u.Bio, &u.ProfilePhotoURL, &u.GooglePhotoURL,
-		&u.ReputationScore, &u.PrivacyLevel, &u.IsActive,
+		&u.DateOfBirth, &u.Gender, &u.Bio, &u.Location, &u.Website, pq.Array(&u.Languages), pq.Array(&u.Interests),
+		&u.TravelStyle, &u.ProfileVisibility, &u.EmailNotifications, &u.PushNotifications,
+		&u.ProfilePhotoURL, &u.GooglePhotoURL, &u.ReputationScore, &u.PrivacyLevel, &u.IsActive,
 		&u.LastLogin, &u.CreatedAt, &u.UpdatedAt,
 	)
 
